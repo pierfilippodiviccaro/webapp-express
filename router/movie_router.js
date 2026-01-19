@@ -5,5 +5,5 @@ const router=express.Router()
 //index 
 router.get("/",movieController.index)
 //show
-// router.get("/:id",)
+router.get("/:id",movieController.show)
 export default router
