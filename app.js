@@ -1,8 +1,16 @@
 import express from "express"
 import movieRouter from "./router/movie_router.js"
 import handleError from "./middleware/errorHandler.js"
+import cors from "cors"
 const app = express()
 const port = process.env.SERVER_PORT
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
+
 app.use("/api/movies", movieRouter)
 
 app.use(handleError)
