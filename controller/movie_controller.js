@@ -2,7 +2,7 @@ import connection from "../database/db.js";
 
 //index
 function index(req, res, next) {
-    const query = "SELECT* FROM `movies`"
+    const query = "SELECT * FROM `movies`"
     connection.query(query, (err, result) => {
         if (err) return next(err)
         return res.json({
@@ -12,7 +12,7 @@ function index(req, res, next) {
 }
 function show(req,res,next){
     const id= req.params.id
-    const query= "SELECT* FROM `movies` WHERE `id` = ? "
+    const query= "SELECT * FROM `movies` WHERE `id` = ? "
     connection.query(query, [id],(err,results) => {
         if(err) return next (err)
         if(results.length=== 0){
