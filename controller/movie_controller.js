@@ -23,7 +23,16 @@ function show(req,res,next){
             })
         }
         const film = results[0]
-        res.json(film)
+        
+        const reviewsQuery= "SELECT * FORM `reviews` WHERE `movie_id`=? "
+        connection.query(reviewsQuery,[id],(err,rewiewsResult)=>{
+            if(err) return next (err)
+                res.json({
+                ...film,
+                reviews:rewiewsResult       
+            
+                })
+        })
     })
 
 }

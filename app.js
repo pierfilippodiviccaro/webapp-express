@@ -10,7 +10,7 @@ app.use(
     origin: process.env.FRONTEND_URL
   }),
 );
-
+app.use(exppress.static("public"))
 app.use("/api/movies", movieRouter)
 
 app.use(handleError)
