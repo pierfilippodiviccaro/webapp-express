@@ -1,5 +1,5 @@
 import connection from "../database/db.js";
-
+import slugify from "slugify";
 //index
 function index(req, res, next) {
     const query = "SELECT * FROM `movies`"
@@ -42,11 +42,65 @@ function show(req, res, next) {
             if (err) return next(err)
             res.json({
                 ...film,
-                reviews: rewiewsResult
+                reviews: rewiewsResult,
+                image: "http://localhost:6700" + film.image
 
             })
         })
     })
 
 }
-export default { index, show }
+
+function store(req, res, next) {
+  const { title, director, abstract } = req.body;
+
+  console.log(req.body, req.file);
+
+  const slug = slugify(title, {
+    lower: true,
+    strict: true, // rimuove caratteri speciali
+  });
+
+  const fileName = req.file?.filename || null;
+
+  const sql =
+    "INSERT INTO `movies` (`slug`, `title`,`director`, `abstract`, `image`) VALUES  (?, ?, ?, ?, ?)";
+
+  connection.query(
+    sql,
+    [slug, title, director, abstract, fileName],
+    (err, result) => {
+      if (err) return next(err);
+
+      res.status(201);
+      return res.json({
+        message: "Il film è stato salvato con successo",
+        filmId: result.insertId,
+        filmSlug: slug,
+      });
+    },
+  );
+}
+function storeReview(req, res, next) {
+    const { name, vote, text } = req.body;
+    const filmId = req.params.id;
+    console.log(req.params.id , req.body)
+    if (!name || !vote || vote < 1 || vote > 5 || !text) {
+        res.status(400);
+        return res.json({
+            error: "CLIENT ERROR",
+            message: "name, vote (1-5) e text obbligatori"
+        });
+    }
+    
+    const sql = "INSERT INTO reviews (movie_id, name, vote, text) VALUES (?, ?, ?, ?)";
+    connection.query(sql, [filmId, name, vote, text], (err, result) => {
+        if (err) return next(err);
+        res.status(201).json({
+            message: "Review aggiunta!",
+            id: result.insertId
+        });
+    });
+}
+
+export default { index, show,storeReview,store }

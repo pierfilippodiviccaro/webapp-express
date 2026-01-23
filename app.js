@@ -10,9 +10,10 @@ app.use(
     origin: process.env.FRONTEND_URL
   }),
 );
+app.use(express.json())
 app.use(express.static("public"))
 app.use("/api/movies", movieRouter)
-
+app.use('/movies', movieRouter);
 app.use(handleError)
 app.listen(port, () => {
     console.log(`il server è in ascolto sulla porta ${port}`);
